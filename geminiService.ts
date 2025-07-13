@@ -3,6 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import type { FinancialData, GeminiApiResponse, GroundingSource } from '../types';
 
 // IMPORTANT: Replace "YOUR_API_KEY_HERE" with your actual Google Gemini API Key.
+// This is the ONLY place you need to change.
 const API_KEY = "AIzaSyCI58HwH_GMfQRgOiNRq5rD_jXaLT6r2vM";
 
 function buildPrompt(company: string): string {
@@ -30,10 +31,11 @@ If you cannot find a specific value for any field, its value in the JSON MUST be
 }
 
 export const fetchFinancialData = async (company: string): Promise<GeminiApiResponse> => {
+    // Safety check to ensure the developer has replaced the placeholder key.
     if (API_KEY === "YOUR_API_KEY_HERE" || !API_KEY) {
         throw new Error("API Key is missing. Please open services/geminiService.ts and replace 'YOUR_API_KEY_HERE' with your actual Gemini API key.");
     }
-    
+
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     try {
@@ -81,9 +83,6 @@ export const fetchFinancialData = async (company: string): Promise<GeminiApiResp
     } catch (error) {
         console.error("Error fetching financial data:", error);
         if (error instanceof Error) {
-            if (error.message.includes('API key not valid')) {
-                throw new Error('Your API key is not valid. Please check it and try again.');
-            }
              if (error.message.includes('400 Bad Request')) {
                 throw new Error('The request was malformed. This might be a temporary issue with the AI service or a problem with the prompt. Please try again later.');
             }
